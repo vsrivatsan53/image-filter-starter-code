@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
@@ -29,12 +29,12 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
 
-  app.get("/filteredimage", async ( req, res ) => {
+  app.get("/filteredimage", async ( req:Request, res:Response ) => {
     if (req.query.image_url) {
       const image_url:string = req.query.image_url
       try {
         const response:string = await filterImageFromURL(image_url)
-        res.sendFile(response, async (error) => {
+        res.sendFile(response, async (error:Error) => {
           if (error) {
             res.status(500).send(`The following error occurred when attempting to return image: ${error}`)
             return
@@ -42,7 +42,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
             await deleteLocalFiles([response])
           }
         })
-      } catch(error) {
+      } catch(error:any) {
         res.status(500).send(`The following error occurred when attempting to filter image from url: ${error}`)
       }
     } else {
